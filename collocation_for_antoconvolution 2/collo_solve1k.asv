@@ -1,0 +1,30 @@
+function Uh=collo_solve1k(y_delta,u_exact,k,N,c,d,alpha,delta,x)
+h=1/N;
+m=size(c,2);
+Uh=zeros(N,1);
+%%%计算初始值U0
+U0=chooseu0(y_delta,u_exact,k,delta,m,h,c,d,x);
+%%%%求解非线性方程
+syms v
+a=double(int(k(c*h,v*h),[0,c]));
+y1=y_delta(1);
+f=@(u)(alpha(1)*u+h*a*u*u-alpha(1)*U0-y1);
+u0=1.5;
+usol=fsolve(f,u0);
+Uh(1)=usol;
+%%%%求解线性方程
+for n=1:N-1
+    m1=0;
+    for l=0:n-1
+        a=c*(h*n - 2*h*l + 1);
+        b=(c - 1)*(h + 2*h*l - h*n - 1);
+        %a=int(k(n*h+c*h,l*h+v*h),[0,c]);
+        %b=int(k(n*h+c*h,l*h+v*h),[c,1]);
+        m1=m1+a*Uh(n-l+1)*Uh(l+1)+b*Uh(n-l)*Uh(l+1);
+    end
+    a=-c*(h*n - 1);
+    %a=int(k(n*h+c*h,n*h+v*h),[0,c]);
+    g=y_delta(n+1)-h*m1+alpha(n+1)*U0;
+    Uh(n+1)=g/(alpha(n+1)+h*a*Uh(1));
+end
+end

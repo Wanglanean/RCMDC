@@ -1,0 +1,79 @@
+clc; clear;
+h = 0.001;  % Step size for grid discretization
+
+%%%% Selection of collocation points parameters (Gaussian collocation nodes)
+%c = 1/2;  % Alternative collocation node
+c = [(3-sqrt(3))/6, (3+sqrt(3))/6];  % Gaussian collocation nodes
+m = size(c, 2);  % Number of collocation nodes
+d = m;  % Dimension of collocation nodes
+
+%%%% Mesh discretization
+N = round(1/h);  % Number of intervals in the grid
+h = 1/N;  % Recalculate step size based on number of intervals
+T = zeros(N*m, 1);  % Initialize time grid
+for n = 0:N-1
+    for j = 1:m
+        T(m*n + j) = n*h + c(j)*h;  % Compute time grid points based on collocation nodes
+    end
+end
+
+%%%% Regularization parameters
+%%% Variable regularization parameters
+alpha_min = 0.6; alpha_max = 0.8;  % Define the range for regularization parameters
+alpha_increase = linspace(alpha_min, alpha_max, N*m);  % Generate a linearly spaced array of alpha values
+alpha_adp = alpha_increase(randperm(N*m));  % Randomly permute the alpha values for adaptation
+
+%%% Fixed regularization parameters
+nopt = 20;  % Number of fixed regularization parameters
+alpha_opt = zeros(N*m, nopt);  % Initialize matrix to hold fixed alpha values
+for i = 1:nopt
+    alpha_fix = alpha_increase(round(linspace(1, N*m, nopt)));  % Select alpha values from the generated array
+    alpha_opt(:, i) = linspace(alpha_fix(i), alpha_fix(i), N*m);  % Replicate the fixed alpha value across the grid
+end
+
+%%%% Define exact solution
+%%% Continuous function 
+%u_exact = @(t) 2 + cos(4*pi*t);  % Cosine-based exact solution
+%u_exact = @(t) t.^2 - 2*t + 2;  % Quadratic exact solution
+%%% Piecewise function
+%u_exact = @(t) (t >= 0 & t <= 0.5) * 0.5 + (t > 0.5 & t <= 0.8) * 0.25 + (t > 0.8 & t <= 1) * 0.75;  % Piecewise exact solution
+
+%%%% Kernel function (Uncomment one of the following to use as kernel function)
+k = @(t,s) 1;  % Constant kernel function
+%k = @(t,s) t - 2*s + 1;  % Linear kernel function
+
+%%%% Generate perturbed data y_delta
+y = computey(u_exact, k, T);  % Compute exact data
+u = u_exact(T);  % Evaluate exact solution at the grid points
+u0 = u_exact(0);  % Initial value of the exact solution
+noise = 0.01;  % Noise level
+y_delta = y + alpha_adp'.*(u - u0) + noise*(-1 + 2*rand(N*m, 1));  % Perturb the data with noise and regularization
+delta = max(abs(y_delta - y));  % Compute the maximum perturbation (noise level)
+
+%%%% Collocation method solution
+x = 1; y = 3;  % Some predefined parameters for collocation
+
+%%% Solution with variable regularization parameter
+Uh_adp = collo_solve2(y_delta, u_exact, k, N, c, d, alpha_adp, delta, x);  % Solve using variable regularization
+figure(1)
+plot(T, u, "k-", T, Uh_adp, "k--")  % Plot exact solution and approximate solution
+legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 12)  % Add legend with LaTeX formatting
+print('Figure/Ex3m2delta2', '-dpng', '-r600');  % Save figure as a high-resolution PNG image
+[erroradp2, erroradpinf] = normcompute(u_exact, Uh_adp, h, c, y);  % Compute error norms for variable regularization
+erroradpgrid = norm(u - Uh_adp, inf);  % Compute grid-based error norm
+
+%%% Solution with fixed regularization parameter
+Uh_opt = zeros(N*m, nopt);  % Initialize solution matrix for fixed regularization
+error_opt_2 = zeros(1, nopt); error_opt_inf = zeros(1, nopt); error_opt_grid = zeros(1, nopt);  % Initialize error arrays
+for i = 1:nopt
+    Uh_opt(:, i) = collo_solve2(y_delta, u_exact, k, N, c, d, alpha_opt(:, i), delta, x);  % Solve using fixed regularization
+    [error_opt_2(i), error_opt_inf(i)] = normcompute(u_exact, Uh_opt(:, i), h, c, y);  % Compute error norms for fixed regularization
+    error_opt_grid(i) = norm(u - Uh_opt(:, i), inf);  % Compute grid-based error norm
+end
+[min_erroropt2, min_erroropt2_index] = min(error_opt_2);  % Find minimum L2 error and its index
+[min_erroroptinf, min_erroroptinf_index] = min(error_opt_inf);  % Find minimum L-inf error and its index
+[min_erroroptgrid, min_erroroptgrid_index] = min(error_opt_grid);  % Find minimum grid-based error and its index
+figure(2)
+plot(T, u, "k-", T, Uh_opt(:, min_erroropt2_index), "k--")  % Plot exact solution and best fixed regularization solution
+legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 12)  % Add legend with LaTeX formatting
+print('Figure/Ex3m2delta2alpha_fix', '-dpng', '-r600');  % Save figure as a high-resolution PNG image
