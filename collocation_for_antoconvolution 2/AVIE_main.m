@@ -47,7 +47,7 @@ k = @(t,s) 1;  % Constant kernel function
 
 %%%% Load perturbed data y_delta
 y_exaxt = computey(u_exact, k, T);
-load('y_delta_Ex1m1delta1.mat', 'y_delta');
+load('noisedata/y_delta_Ex1m1delta1.mat', 'y_delta');
 delta = max(abs(y_delta - y_exaxt));  % Compute the maximum perturbation (noise level)
 %%%% Collocation method solution
 x = 1; y = 1;  % Some predefined parameters for collocation
@@ -59,7 +59,7 @@ Uh_adp = collo_solve1(y_delta, u_exact, N, c, d, alpha_adp, delta, x);
 figure(1)
 plot(T, u, "k-", T, Uh_adp, "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 12)  
-%print('Figure/Ex3m2delta2', '-dpng', '-r600');
+print('Figure/Ex1m1delta1', '-dpng', '-r600');
 % Compute error norms for variable regularization
 [erroradp2, erroradpinf] = normcompute(u_exact, Uh_adp, h, c, y);  
 erroradpgrid = norm(u - Uh_adp, inf);  
@@ -81,4 +81,4 @@ end
 figure(2)
 plot(T, u, "k-", T, Uh_opt(:, min_erroropt2_index), "k--") 
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 12) 
-%print('Figure/Ex3m2delta2alpha_fix', '-dpng', '-r600'); 
+print('Figure/Ex1m1delta1alpha_fix', '-dpng', '-r600'); 
