@@ -37,11 +37,10 @@ for i=1:5
         =AVIEmain2(delta1(i),h(i),fuc_idx3,u_exact3,k1,m);
 end
 %%%%Example4
-N1=round(1./h1);
 Uh4_adp=zeros(Nmax,5);Uh4_opt=zeros(Nmax,5);alpha4=zeros(Nmax,5);y_delta4=zeros(Nmax,5);
 error4_adp=zeros(5,3);error4_opt=zeros(5,3);alpha4_optmin=zeros(5,1);
 for i=1:5
-    [Uh4_adp(1:N1(i),i),Uh4_opt(1:N1(i),i),y_delta4(1:N1(i),i),alpha4(1:N1(i),i),error4_adp(i,:),error4_opt(i,:),alpha4_optmin(i)]...
+    [Uh4_adp(1:N(i),i),Uh4_opt(1:N(i),i),y_delta4(1:N(i),i),alpha4(1:N(i),i),error4_adp(i,:),error4_opt(i,:),alpha4_optmin(i)]...
         =AVIEmain2(delta1(i),h(i),fuc_idx4,u_exact4,k1,m);
 end
 %%%figure
@@ -100,54 +99,53 @@ plot(T5, u_exact2(T5), "k-", T5, Uh2_opt(1:N(5),5), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16)  
 print('part2Ex2m1delta3alpha_fix', '-dpng', '-r600'); 
 %%%%%%%%
-[T31,T32,T33,T34,T35]=generateT(h1,c);
 figure(13)
-plot(T31, u_exact3(T31), "k-", T31, Uh3_adp(1:N1(1),1), "k--")
+plot(T31, u_exact3(T31), "k-", T1, Uh3_adp(1:N1(1),1), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex3m1delta1alpha', '-dpng', '-r600'); 
 figure(14)
-plot(T33, u_exact3(T33), "k-", T33, Uh3_adp(1:N1(3),3), "k--")
+plot(T33, u_exact3(T33), "k-", T3, Uh3_adp(1:N1(3),3), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex3m1delta2alpha', '-dpng', '-r600'); 
 figure(15)
-plot(T35, u_exact3(T35), "k-", T35, Uh3_adp(1:N1(5),5), "k--")
+plot(T35, u_exact3(T35), "k-", T5, Uh3_adp(1:N1(5),5), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')  
 print('part2Ex3m1delta3alpha', '-dpng', '-r600'); 
 figure(16)
-plot(T31, u_exact3(T31), "k-", T31, Uh3_opt(1:N1(1),1), "k--") 
+plot(T31, u_exact3(T31), "k-", T1, Uh3_opt(1:N1(1),1), "k--") 
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest') 
 print('part2Ex3m1delta1alpha_fix', '-dpng', '-r600');
 figure(17)
-plot(T33, u_exact3(T33), "k-", T33, Uh3_opt(1:N1(3),3), "k--")
+plot(T33, u_exact3(T33), "k-", T3, Uh3_opt(1:N1(3),3), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex3m1delta2alpha_fix', '-dpng', '-r600'); 
 figure(18)
-plot(T35, u_exact3(T35), "k-", T35, Uh3_opt(1:N1(5),5), "k--")
+plot(T35, u_exact3(T35), "k-", T5, Uh3_opt(1:N1(5),5), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')  
 print('part2Ex3m1delta3alpha_fix', '-dpng', '-r600'); 
 %%%%%%%%%%%%%%%%%
 figure(19)
-plot(T31, u_exact4(T31), "k-", T31, Uh4_adp(1:N1(1),1), "k--")
+plot(T31, u_exact4(T31), "k-", T1, Uh4_adp(1:N1(1),1), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex4m1delta1alpha', '-dpng', '-r600'); 
 figure(20)
-plot(T33, u_exact4(T33), "k-", T33, Uh4_adp(1:N1(3),3), "k--")
+plot(T33, u_exact4(T33), "k-", T3, Uh4_adp(1:N1(3),3), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex4m1delta2alpha', '-dpng', '-r600'); 
 figure(21)
-plot(T35, u_exact4(T35), "k-", T35, Uh4_adp(1:N1(5),5), "k--")
+plot(T35, u_exact4(T35), "k-", T5, Uh4_adp(1:N1(5),5), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')  
 print('part2Ex4m1delta3alpha', '-dpng', '-r600'); 
 figure(22)
-plot(T31, u_exact4(T31), "k-", T31, Uh4_opt(1:N1(1),1), "k--") 
+plot(T31, u_exact4(T31), "k-", T1, Uh4_opt(1:N1(1),1), "k--") 
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest') 
 print('part2Ex4m1delta1alpha_fix', '-dpng', '-r600');
 figure(23)
-plot(T33, u_exact4(T33), "k-", T33, Uh4_opt(1:N1(3),3), "k--")
+plot(T33, u_exact4(T33), "k-", T3, Uh4_opt(1:N1(3),3), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')
 print('part2Ex4m1delta2alpha_fix', '-dpng', '-r600'); 
 figure(24)
-plot(T35, u_exact4(T35), "k-", T35, Uh4_opt(1:N1(5),5), "k--")
+plot(T35, u_exact4(T35), "k-", T5, Uh4_opt(1:N1(5),5), "k--")
 legend('$$u^{\dagger}$$','$$u_h^{\alpha,\delta}$$','Interpreter', 'latex', 'FontSize', 16,'Location', 'northwest')  
 print('part2Ex4m1delta3alpha_fix', '-dpng', '-r600'); 
 %%%convergence rate
