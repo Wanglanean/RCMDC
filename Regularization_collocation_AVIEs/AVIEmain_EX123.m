@@ -76,7 +76,7 @@ error_opt_2 = zeros(1, nopt); error_opt_inf = zeros(1, nopt); error_opt_grid = z
 Uh_optvec = zeros(N*m, nopt);
 for i = 1:nopt
     %%%%Solve using fixed regularization
-    if (fun_idx == 1) || (fun_idx == 4)
+    if (fun_idx == 1) || (fun_idx == 3)
         if m==1
             Uh_optvec(:, i) = collo_solve1(y_delta, u_exact,k, N, c, d, alpha_opt(:, i), delta, x);
         elseif m==2
@@ -104,3 +104,4 @@ Uh_opt=Uh_optvec(:, min_erroropt2_index);
 [erroradp2, erroradpinf] = normcompute(u_exact, Uh_adp, h, c, fun_idx);  
 erroradpgrid = norm(u - Uh_adp, inf);
 error_adp=[erroradp2,erroradpinf,erroradpgrid];
+
